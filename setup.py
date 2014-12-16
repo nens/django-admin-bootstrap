@@ -1,31 +1,37 @@
-#!/usr/bin/env python
-import os
 from setuptools import setup, find_packages
+import os
 
-f = open(os.path.join(os.path.dirname(__file__), 'README.rst'))
-readme = f.read()
-f.close()
+CLASSIFIERS = [
+    'Development Status :: 5 - Production/Stable',
+    'Environment :: Web Environment',
+    'Framework :: Django',
+    'Intended Audience :: Developers',
+    'License :: OSI Approved :: BSD License',
+    'Operating System :: OS Independent',
+    'Programming Language :: Python',
+    'Programming Language :: Python :: 2',
+    'Programming Language :: Python :: 3',
+    'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
+    'Topic :: Software Development',
+    'Topic :: Software Development :: Libraries :: Application Frameworks',
+]
 
 setup(
-    name='bootstrap_admin',
-    version='0.2.9',
-    description='Twitter Bootstrap Responsive Skin for Django Admin.',
-    long_description=readme,
-    author='Douglas Miranda',
-    author_email='douglasmirandasilva@gmail.com',
-    url='https://github.com/douglasmiranda/django-admin-bootstrap',
-    license='BSD',
+    author="Riccardo Forina",
+    author_email="riccardo@forina.me",
+    name='django-admin-bootstrapped',
+    version='1.6.9',
+    description='A Bootstrap theme for Django Admin',
+    long_description=open(os.path.join(os.path.dirname(__file__), 'README.rst')).read(),
+    url='https://github.com/riccardo-forina/django-admin-bootstrapped',
+    license='BSD License',
+    platforms=['OS Independent'],
+    classifiers=CLASSIFIERS,
+    install_requires=[
+        'setuptools',
+        'Django>=1.4,<1.7',
+    ],
     packages=find_packages(),
     include_package_data=True,
-    zip_safe=False,
-    classifiers=[
-        'Development Status :: 5 - Production/Stable',
-        'Environment :: Web Environment',
-        'Framework :: Django',
-        'Intended Audience :: Developers',
-        'License :: OSI Approved :: BSD License',
-        'Operating System :: OS Independent',
-        'Programming Language :: Python',
-    ],
-    keywords='django,admin,skin,theme',
+    zip_safe=False
 )

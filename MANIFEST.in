@@ -1,5 +1,2 @@
-include README.rst
-include LICENSE
-recursive-include bootstrap_admin *
-recursive-include bootstrap_admin/static *
-recursive-include bootstrap_admin/templates *
+include README.rst LICENSE
+recursive-include django_admin_bootstrapped *

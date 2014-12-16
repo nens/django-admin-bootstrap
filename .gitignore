@@ -3,3 +3,11 @@ build/*
 dist/*
 django.mo
 bootstrap_admin.egg-info/*
+*.pyo
+.DS_Store
+*.egg-info
+testenv
+.idea
+dist
+build
+

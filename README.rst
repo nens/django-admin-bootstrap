@@ -1,122 +1,151 @@
-Responsible Skin for Django Admin
-=================================
+django-admin-bootstrapped
+=========================
 
-django-admin-bootstrap is a **Custom Responsible Skin for Django Admin
-1.5.\***. I hope you like and help me make it better.
+|PyPI version|
 
-.. image:: https://pypip.in/d/bootstrap_admin/badge.png
-    :target: https://crate.io/packages/bootstrap_admin/
+A Django admin theme using Bootstrap. It doesn't need any kind
+of modification on your side, just add it to the installed apps.
+
+Requirements
+------------
+
+-  Django ``>=1.4.x`` and ``<1.7``
+
+Installation
+------------
+
+1. Download it from PyPi with ``pip install django-admin-bootstrapped``
+2. Add into the ``INSTALLED_APPS`` **before** ``'django.contrib.admin'``:
+
+::
+ 
+    'django_admin_bootstrapped.bootstrap3',
+    'django_admin_bootstrapped',
+
+3. Have fun!
+
+Goodies
+-------
+
+Translate/change an application name with a template
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+With the default admin you can't change the application name, but
+django-admin-bootstrapped let you do it in a really easy way. Just
+create a file named ``admin_app_name.html`` into the application's
+template folder. Eg: ``myapp/templates/admin_app_name.html`` or
+``project/templates/myapp/admin_app_name.html``. You can also change the
+default Django Administration title, just add a ``admin_title.html``
+file into your ``project/templates/admin/`` folder.
+
+Add custom html to the change form of any model with a template
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+You can inject custom html on top of any change form creating a template
+named ``admin_model_MODELNAME_change_form.html`` into the application's
+template folder. Eg:
+``myapp/templates/myapp/admin_model_mymodelname_change_form.html`` or
+``project/templates/myapp/admin_model_mymodelname_change_form.html``.
+
+Inline sortable
+~~~~~~~~~~~~~~~
+
+You can add drag&drop sorting capability to any inline with a couple of
+changes to your code.
+
+First, add a ``position`` field in your model (and sort your model
+accordingly), for example:
+
+::
+
+    class TestSortable(models.Model):
+        that = models.ForeignKey(TestMe)
+        position = models.PositiveSmallIntegerField("Position")
+        test_char = models.CharField(max_length=5)
+
+        class Meta:
+            ordering = ('position', )
+
+Then in your admin.py create a class to handle the inline using the
+``django_admin_bootstrapped.admin.models.SortableInline`` mixin, like
+this:
+
+::
+
+    from django_admin_bootstrapped.admin.models import SortableInline
+    from models import TestSortable
+
+    class TestSortable(admin.StackedInline, SortableInline):
+        model = TestSortable
+        extra = 0
+
+You can now use the inline as usual. The result will look like this:
+
+.. image:: https://riccardo.forina.me/static/screens/django_admin_bootstrapped_screen_inlines.png
+
+This feature was brought to you by `Kyle
+Bock <https://github.com/kwbock>`__. Thank you Kyle!
+
+XHTML Compatible
+~~~~~~~~~~~~~~~~
+
+Compatible with both html and xhtml. To enable xhtml for your django app
+add the following to your settings.py: DEFAULT\_CONTENT\_TYPE =
+'application/xhtml+xml'
+
+Generic lookups in admin
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. image:: https://a248.e.akamai.net/camo.github.com/2848fec376b4af6d6a08e2a3a7d575569115f998/687474703a2f2f692e696d6775722e636f6d2f766970547453732e706e67
+
+All that needs to be done is change the admin widget with either
+formfield\_overrides like this:
+
+::
+
+    from django_admin_bootstrapped.widgets import GenericContentTypeSelect
+
+    class SomeModelAdmin(admin.ModelAdmin):
+        formfield_overrides = {
+            models.ForeignKey: {'widget': GenericContentTypeSelect},
+        }
+
+Or if you want to be more specific:
+
+::
+
+    from django_admin_bootstrapped.widgets import GenericContentTypeSelect
+
+    class SomeModelAdmin(admin.ModelAdmin):
+        def formfield_for_dbfield(self, db_field, **kwargs):
+            if db_field.name == 'content_type':
+                kwargs['widget'] = GenericContentTypeSelect
+            return super(SomeModelAdmin, self).formfield_for_dbfield(db_field, **kwargs)
+
+If you decide on using ``formfield_overrides`` `you should be aware of
+its limitations with relation
+fields <https://docs.djangoproject.com/en/dev/ref/contrib/admin/#django.contrib.admin.ModelAdmin.formfield_overrides>`__.
+
+This feature (and many more) was brought to you by `Jacob
+Magnusson <https://github.com/jmagnusson>`__. Thank you Jacob!
 
 Screenshots
 -----------
 
-.. image:: https://raw.github.com/douglasmiranda/django-admin-bootstrap/master/static/screenshot-github.jpg
+Homepage
+~~~~~~~~
 
-PS: the wysiwyg editor you see on the screenshot is the `django-wysiwyg-redactor <https://github.com/douglasmiranda/django-wysiwyg-redactor>`_
+.. image:: https://riccardo.forina.me/static/screens/django_admin_bootstrapped_screen_v02_index.png
 
-Features (beyond what you already know)
----------------------------------------
+List view with filters in dropdown
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
--  a bit of responsiveness
--  search directly from the apps list
--  sidebar logs for specific app (on app index)
+.. image:: https://riccardo.forina.me/static/screens/django_admin_bootstrapped_screen_v02_list_filter.png
 
-Install
--------
+Change form view
+~~~~~~~~~~~~~~~~
 
-**NOTE:** I'm assuming you use `pip <http://www.pip-installer.org/>`_ to
-install the Python Packages.
+.. image:: https://riccardo.forina.me/static/screens/django_admin_bootstrapped_screen_v02_change_form.png
 
-from latest version on pypi (fully compatible with django1.5) ::
-
-    $ pip install bootstrap-admin
-
-from github master branch ::
-
-    $ pip install git+https://github.com/douglasmiranda/django-admin-bootstrap
-
-or clone the master branch in your machine ::
-
-    $ git clone https://github.com/douglasmiranda/django-admin-bootstrap
-
-And don't forget to add *bootstrap\_admin* in **INSTALLED\_APPS** before
-the *django.contrib.admin*.
-
-Example: :: 
-
-   INSTALLED_APPS = (     
-       # ...       
-       'bootstrap_admin',       
-       'django.contrib.admin',      
-       # ...   
-    )
-
-Contributing
-------------
-
-1. Fork it!
-2. Create your feature branch: ``git checkout -b my-new-feature``
-3. Commit your changes: ``git commit -am 'Add some feature'``
-4. Push to the branch: ``git push origin my-new-feature``
-5. Submit a pull request =]
-
-`Open an
-issue <https://github.com/douglasmiranda/django-admin-bootstrap/issues/new>`_
-if you find a bug or want something more.
-
-History
--------
--  0.2.9 Nov 13, 2013
-
-   -   Fix: Use "/" divider in breadcrumbs where "&rsaquo;" remains. ( pull #33 )
-
--  0.2.8 Nov 07, 2013
-
-   -   Fix: Forgot to add README.rst on MANIFEST.in (shame on me)
-
--  0.2.7 Nov 07, 2013
-
-   -   Fix: bug when retrieving message.tags ( pull #32 )
-
--  0.2.6 Nov 05, 2013
-
-   -   django-mptt templates ( pull #30 )
-
--  0.2.5 Oct 14, 2013
-
-   -  Enhancement: Separate field template to allow easy customizations.
-      ( pull #26 )
-
--  0.2.4 Oct 13, 2013
-
-   -  Fix: Do not add span8 class to inputs of CheckboxSelectMultiple. (
-      pull #24 )
-
--  0.2.3 Oct 7, 2013
-
-   -  Fix: Style for errors list on tabular inline.
-   -  Fix: issue #22
-
--  0.2.2 Aug 11, 2013
-
-   -  Fix: "shaking" effect that nav-bar causes when is affixed on top.
-   -  Fix: search input width (responsive)
-   -  Fix: adding overflow ellipsis on the form search input
-   -  Fix: margin for "add-another" option
-
--  0.2.1 May 23, 2013
-
-   -  Fix: the issue #17 (about the MANIFEST.in)
-
--  0.2.0 May 14, 2013
-
-   -  Final touches
-   -  Show the search input properly considering the permissions
-   -  Fix: z-index nav-bar bug
-
--  early versions
-
-   -  Have some little bugs, it is usable, but I recommend the latest
-      version
-
-
+.. |PyPI version| image:: https://pypip.in/d/django-admin-bootstrapped/badge.png
+   :target: https://pypi.python.org/pypi/django-admin-bootstrapped
